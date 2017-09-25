@@ -1,5 +1,5 @@
 //
-//  CircularTranstion.swift
+//  WaveTransition.swift
 //  Transitions
 //
 //  Created by Sai Madhukar on 27/07/17.
@@ -8,10 +8,9 @@
 
 import UIKit
 
-class CircularTranstion: NSObject {
+class WaveTransition: NSObject {
     
-    
-    var circle = UIView()
+    var wave = UIView()
     
     enum TranstionMode {
         case push
@@ -23,18 +22,19 @@ class CircularTranstion: NSObject {
     var startPoint : CGPoint = CGPoint.zero {
         
         didSet{
-            circle.center = startPoint
+            wave.center = startPoint
         }
         
     }
-    var duration : Double = 0.5
-    var backgroundColor : UIColor = .yellow
+    var duration : Double = 0.8
+    var backgroundColor : UIColor = UIColor(red: 73.0/255.0, green: 133.0/255.0, blue: 255.0/255.0, alpha: 1.0)
     var transcationMode : TranstionMode = .push
+
     
 }
 
 
-extension CircularTranstion : UIViewControllerAnimatedTransitioning{
+extension WaveTransition : UIViewControllerAnimatedTransitioning{
     
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
@@ -54,63 +54,62 @@ extension CircularTranstion : UIViewControllerAnimatedTransitioning{
                 
                 let viewCenter = presentingView.center
                 let viewSize = presentingView.bounds.size
-                circle = UIView()
+                wave = UIView()
                 
-                circle.backgroundColor = backgroundColor
-                circle.frame = frameForCircle(withCenter: viewCenter, withSize: viewSize, withStartingPoint: startPoint)
-                circle.center = startPoint
-                circle.layer.cornerRadius = circle.frame.size.height / 2
-                circle.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
-                container.addSubview(circle)
-                container.insertSubview(presentingView, belowSubview: circle)
+                wave.backgroundColor = backgroundColor
+                wave.frame = frameForWave(withCenter: viewCenter, withSize: viewSize, withStartingPoint: startPoint)
+                wave.center = startPoint
+              //  wave.layer.cornerRadius = wave.frame.size.height / 2
+                
+                container.addSubview(wave)
+              
+                container.insertSubview(presentingView, belowSubview: wave)
                 presentingView.alpha = 0
-
                 
-               UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                    self.circle.transform = .identity
-                    self.circle.alpha = 1
-                  
                 
+                UIView.animate(withDuration: duration, animations: {
+                    self.wave.transform = .identity
+                    self.wave.alpha = 1
+                    
+                    
                 }, completion: { (success) in
                     presentingView.alpha = 1
-                    self.circle.removeFromSuperview()
-                   
+                    self.wave.removeFromSuperview()
+                    
                     transitionContext.completeTransition(success)
                 })
-
+                
             }
             break
         case .pop:
             
             if let returningView = transitionContext.view(forKey: .to) {
                 
-                circle = UIView()
+                wave = UIView()
                 let viewCenter = returningView.center
                 let viewSize = returningView.bounds.size
                 
-                circle.backgroundColor = backgroundColor
-                circle.frame = frameForCircle(withCenter: viewCenter, withSize: viewSize, withStartingPoint: startPoint)
-                circle.center = startPoint
-                circle.layer.cornerRadius = circle.frame.size.height / 2
+                wave.backgroundColor = backgroundColor
+                wave.frame = frameForWave(withCenter: viewCenter, withSize: viewSize, withStartingPoint: startPoint)
+                wave.center = startPoint
+                wave.layer.cornerRadius = wave.frame.size.height / 2
                 
-                container.addSubview(circle)
-                container.insertSubview(returningView, belowSubview: circle)
+                container.addSubview(wave)
+                container.insertSubview(returningView, belowSubview: wave)
                 returningView.alpha = 1
-                circle.alpha = 1
+                wave.alpha = 1
                 
-                UIView.animate(withDuration: duration, delay: 0, options: UIViewAnimationOptions.curveEaseInOut, animations: {
-                    self.circle.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
-                    self.circle.alpha = 1
+                UIView.animate(withDuration: duration, animations: {
+                    self.wave.transform = CGAffineTransform(scaleX: 0.001, y: 0.001)
+                    self.wave.alpha = 1
                     
                 }, completion: { (success) in
-                    self.circle.removeFromSuperview()
+                    self.wave.removeFromSuperview()
                     transitionContext.completeTransition(success)
                 })
             }
             
             break
-            
-            
             
             
         }
@@ -120,9 +119,9 @@ extension CircularTranstion : UIViewControllerAnimatedTransitioning{
         
     }
     
-    func frameForCircle(withCenter center: CGPoint,
-                       withSize viewSize: CGSize,
-                       withStartingPoint startPoint : CGPoint) -> CGRect {
+    func frameForWave(withCenter center: CGPoint,
+                        withSize viewSize: CGSize,
+                        withStartingPoint startPoint : CGPoint) -> CGRect {
         
         let width = fmax(startPoint.x, viewSize.width - startPoint.x)
         let height = fmax(startPoint.y,viewSize.height - startPoint.y)
@@ -136,3 +135,4 @@ extension CircularTranstion : UIViewControllerAnimatedTransitioning{
     
     
 }
+
